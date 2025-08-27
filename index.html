@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RAG Pipeline</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        input, button { font-size: 16px; padding: 8px; }
+        #question { width: 400px; }
+        #answer { margin-top: 20px; white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px; min-height: 100px; }
+    </style>
+    <script>
+        async function queryAPI() {
+            const question = document.getElementById("question").value;
+            try {
+                const response = await fetch("/query", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question })
+                });
+                const data = await response.json();
+                console.log("Response data:", data);  // For debugging in browser console
+                const displayText = data.answer || data.error || JSON.stringify(data);
+                document.getElementById("answer").innerText = displayText;
+            } catch (error) {
+                document.getElementById("answer").innerText = "Error calling API: " + error.message;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>RAG Pipeline Demo</h1>
+    <input id="question" type="text" placeholder="Ask your question here" />
+    <button onclick="queryAPI()">Ask</button>
+    <pre id="answer"></pre>
+</body>
+</html>
